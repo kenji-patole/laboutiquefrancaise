@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class RegisterController extends AbstractController
 {
@@ -21,7 +22,7 @@ class RegisterController extends AbstractController
 
     #[Route('/inscription', name: 'register')]
     // Injection de dépendance (ManagerRegistry pour envoyer des données en DB)
-    public function index(Request $request): Response
+    public function index(Request $request, UserPasswordHasherInterface $hasher): Response
     {
         $user = new User();
         $form = $this->createForm(RegisterType::class,$user);
@@ -29,8 +30,14 @@ class RegisterController extends AbstractController
         $form->handleRequest($request); 
 
         if ($form->isSubmitted() && $form->isValid()) {
-
+            // On ajoute à notre instance user les données du formulaire
             $user = $form->getData();
+
+            $password = $hasher->hashPassword($user, $user->getPassword());
+            // dd($password);
+
+            $user->setPassword($password);
+
             // Fige la data pour l'enregistrer
             $this->entityManager->persist($user);
             // Exécute 
