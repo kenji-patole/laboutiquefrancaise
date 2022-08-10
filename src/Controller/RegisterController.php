@@ -22,27 +22,30 @@ class RegisterController extends AbstractController
 
     #[Route('/inscription', name: 'register')]
     // Injection de dépendance (ManagerRegistry pour envoyer des données en DB)
-    public function index(Request $request, UserPasswordHasherInterface $hasher): Response
+    public function index(Request $request, UserPasswordHasherInterface $passwordHasher): Response
     {
         $user = new User();
         $form = $this->createForm(RegisterType::class,$user);
+
         // Ecoute la requête
         $form->handleRequest($request); 
 
         if ($form->isSubmitted() && $form->isValid()) {
+
             // On ajoute à notre instance user les données du formulaire
             $user = $form->getData();
 
-            $password = $hasher->hashPassword($user, $user->getPassword());
+            $password = $passwordHasher->hashPassword($user, $user->getPassword());
             // dd($password);
 
+            // Définit le nouveau mot de passe crypté
             $user->setPassword($password);
 
             // Fige la data pour l'enregistrer
             $this->entityManager->persist($user);
+
             // Exécute 
             $this->entityManager->flush();
-
 
         }
 
