@@ -25,7 +25,7 @@ class RegisterController extends AbstractController
     public function index(Request $request, UserPasswordHasherInterface $passwordHasher): Response
     {
         $user = new User();
-        $form = $this->createForm(RegisterType::class,$user);
+        $form = $this->createForm(RegisterType::class, $user);
 
         // Ecoute la requête
         $form->handleRequest($request); 
