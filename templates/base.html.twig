@@ -9,8 +9,8 @@
     <title>{% block title %}La Boutique Française - 100% Made in France{% endblock %}</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('assets/css/boutiquefrancaise.css') }}" rel="stylesheet">
+    <link href="{{asset('assets/css/bootstrap.min.css')}}" rel="stylesheet">
+    <link href="{{asset('assets/css/boutiquefrancaise.css')}}" rel="stylesheet">
 
     <style>
         .bd-placeholder-img {
@@ -41,7 +41,7 @@
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
-                    <a class="nav-link" href="#">Nos produits</a>
+                    <a class="nav-link" href="{{path('products')}}">Nos produits</a>
                 </li>
                 <li class="nav-item active">
                     <a class="nav-link" href="#">Qui sommes-nous ?</a>
