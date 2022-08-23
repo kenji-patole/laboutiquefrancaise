@@ -51,12 +51,14 @@ class ProductRepository extends ServiceEntityRepository
             ->select('c', 'p')
             ->join('p.category', 'c');
 
+        // Si lutilisateur renseigne une catégorie à rechercher
         if (!empty($search->categories)) {
             $query = $query
                 ->andWhere('c.id IN (:categories)')
                 ->setParameter('categories', $search->categories);
         }
 
+        // Si lutilisateur renseigne un texte à rechercher
         if (!empty($search->string)) {
             $query = $query
                 ->andWhere('p.name LIKE :string')
