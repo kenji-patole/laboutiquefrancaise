@@ -23,7 +23,7 @@ class AccountPasswordController extends AbstractController
     public function index(Request $request, UserPasswordHasherInterface $passwordHasher): Response
     {   
         $notification = null;
-
+        // L'utilisateur actuel
         $user = $this->getUser();
         $form = $this->createForm(ChangePasswordType::class, $user);
 
