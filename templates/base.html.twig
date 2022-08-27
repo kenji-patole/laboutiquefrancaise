@@ -41,7 +41,7 @@
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
-                    <a class="nav-link" href="{{path('products')}}">Nos produits</a>
+                    <a class="nav-link" href="{{ path('products') }}">Nos produits</a>
                 </li>
                 <li class="nav-item active">
                     <a class="nav-link" href="#">Qui sommes-nous ?</a>
@@ -57,6 +57,10 @@
                     <a href="{{ path('app_login') }}">Connexion</a> | <a href="{{ path('register') }}">Inscription</a>    
                 {% endif %}
             </div>
+            <a href="{{ path('cart') }}">
+                <img src="{{ asset('assets/img/caddie.png') }}" class="cart-icon" alt="Mon panier">
+            </a>
+            
         </div>
     </nav>
 </header>

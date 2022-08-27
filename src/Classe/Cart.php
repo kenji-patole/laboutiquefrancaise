@@ -2,19 +2,23 @@
 
 namespace App\Classe;
 
+use App\Entity\Product;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**************** PANIER *******************/
 class Cart 
 {
   private $requestStack;
+  private $entityManager;
 
-  public function __construct(RequestStack $requestStack)
+  public function __construct(RequestStack $requestStack, EntityManagerInterface $entityManager)
   {
     $this->requestStack = $requestStack;
+    $this->entityManager = $entityManager;
   }
 
-  // AJOUTER au panier
+  // AJOUTE au panier
   public function add($id) 
   {
     $session = $this->requestStack->getSession();
@@ -33,18 +37,78 @@ class Cart
     $session->set('cart', $cart);
   }
 
-  // AFFICHER le panier
+  // AFFICHE le panier
   public function get() 
   {
     $session = $this->requestStack->getSession();
     return $session->get('cart');
   }
 
-  // SUPPRIMER le panier
+  // SUPPRIME le panier
   public function remove() 
   {
     $session = $this->requestStack->getSession();
     return $session->remove('cart');
+  }
+
+  // SUPPRIME un produit du panier
+  public function delete($id) 
+  {
+    $session = $this->requestStack->getSession();
+
+    $cart = $session->get('cart', []);
+
+    unset($cart[$id]);
+
+    // On redéfinit la nouvelle valeur dans la session cart
+    return $session->set('cart', $cart);
+
+  }
+
+
+  public function decrease($id) 
+  {
+    $session = $this->requestStack->getSession();
+
+    $cart = $session->get('cart', []);
+
+    if($cart[$id] > 1) {
+      // retirer une quantité (-1)
+      $cart[$id]--;
+    } else {
+      // supprimer mon produit
+      unset($cart[$id]);
+    }
+
+    // On redéfinit la nouvelle valeur dans la session cart
+    return $session->set('cart', $cart);
+  }
+
+  public function getFull()
+  {
+    $cartComplete = [];
+
+    if($this->get()) {
+      foreach ($this->get() as $id => $quantity) {
+        // Je récupère l'ID du produit en base de données
+        $product_object = $this->entityManager->getRepository(Product::class)->findOneById($id);
+
+        // SI le produit n'existe pas
+        if (!$product_object) {
+          // On le supprime du panier
+          $this->delete($id);
+          continue;
+        }
+
+        $cartComplete[] = [
+          'product' => $product_object,
+          'quantity' => $quantity
+        ];
+      } 
+    }
+
+    return $cartComplete;
+
   }
 
 }
