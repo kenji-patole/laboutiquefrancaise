@@ -45,6 +45,7 @@ class ProductController extends AbstractController
         ]);
     }
 
+    // On passe le slug en paramètre dans l'url
     #[Route('/produit/{slug}', name: 'product')]
     public function show($slug): Response
     {

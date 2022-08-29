@@ -65,7 +65,7 @@ class Cart
 
   }
 
-
+  // SUPPRIME une quantité
   public function decrease($id) 
   {
     $session = $this->requestStack->getSession();
