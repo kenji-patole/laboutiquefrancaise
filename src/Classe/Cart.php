@@ -54,10 +54,13 @@ class Cart
   // SUPPRIME un produit du panier
   public function delete($id) 
   {
+    // Je lance une session
     $session = $this->requestStack->getSession();
 
+    // Je récupère les informations de la session cart
     $cart = $session->get('cart', []);
 
+    // Je supprime l'élément correspondant
     unset($cart[$id]);
 
     // On redéfinit la nouvelle valeur dans la session cart
