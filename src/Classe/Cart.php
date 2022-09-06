@@ -21,6 +21,7 @@ class Cart
   // AJOUTE au panier
   public function add($id) 
   {
+    // On lance une session
     $session = $this->requestStack->getSession();
     // On récupère les informations du panier à l'aide de la session
     $cart = $session->get('cart', []);

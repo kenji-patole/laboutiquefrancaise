@@ -47,7 +47,9 @@ class AccountAddressController extends AbstractController
             // Exécute
             $this->entityManager->flush();
 
+            // S'il y a un produit dans le panier
             if ($cart->get()) {
+                // JE redirige vers commande
                 return $this->redirectToRoute('order');
             } else {
                 return $this->redirectToRoute('account_address');
