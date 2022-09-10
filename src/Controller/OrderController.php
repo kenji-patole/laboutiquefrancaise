@@ -109,7 +109,8 @@ class OrderController extends AbstractController
             }
 
             // Exécute
-            // $this->entityManager->flush();
+            $this->entityManager->flush();
+            
             return $this->render('order/add.html.twig', [
                 'cart' => $cart->getFull(),
                 'carrier' => $carriers,
