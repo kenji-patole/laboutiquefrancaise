@@ -20,6 +20,7 @@ class StripeController extends AbstractController
         $products_for_stripe = [];
         $YOUR_DOMAIN = 'http://127.0.0.1:8000';
 
+        // ON récupère la commande en base de données à l'aide de la référence
         $order = $entitymanager->getRepository(Order::class)->findOneByReference($reference);
 
         if (!$order) {
@@ -45,7 +46,7 @@ class StripeController extends AbstractController
         $products_for_stripe[] = [
             'price_data' => [
                 'currency' => 'eur',
-                'unit_amount' => $order->getCarrierPrice() * 100,
+                'unit_amount' => $order->getCarrierPrice(),
                 'product_data' => [
                     'name' => $order->getCarrierName(),
                     'images' => [$YOUR_DOMAIN]
@@ -54,6 +55,7 @@ class StripeController extends AbstractController
             'quantity' => 1
         ];
 
+        // STRIPE
         Stripe::setApiKey('sk_test_51LgWZPEhoXXfslZ7tj1K9fiX5qNi97OccQn4O6gP8C845VvFOMJ8FrirIRhAhBUoWB4fxV0j5nmELkBUhliA7dq400PQhbAENG');
 
         $checkout_session = Session::create([
@@ -65,9 +67,15 @@ class StripeController extends AbstractController
                 $products_for_stripe
             ]],
             'mode' => 'payment',
-            'success_url' => $YOUR_DOMAIN . '/success.html',
-            'cancel_url' => $YOUR_DOMAIN . '/cancel.html',
+            'success_url' => $YOUR_DOMAIN . '/commande/merci/{CHECKOUT_SESSION_ID}',
+            'cancel_url' => $YOUR_DOMAIN . '/commande/erreur/{CHECKOUT_SESSION_ID}',
         ]);
+
+        // On ajoute à notre objet $order la session de stripe
+        $order->setStripeSessionId($checkout_session->id);
+
+        // Exécute
+        $entitymanager->flush();
 
         $response = new JsonResponse(['id' => $checkout_session->id]);
         return $response;

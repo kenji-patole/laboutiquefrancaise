@@ -102,6 +102,7 @@ class AccountAddressController extends AbstractController
         // S'il y a une adresse ET que l'utilisateur correspond à celui actuellement connecté
         if ($address || $address->getUser() == $this->getUSer()) {
 
+            // SUPPRIME l'objet en base de données
             $this->entityManager->remove($address);
             
             // Exécute

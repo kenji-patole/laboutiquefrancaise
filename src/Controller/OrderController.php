@@ -31,6 +31,7 @@ class OrderController extends AbstractController
             return $this->redirectToRoute('account_address_add');
         }
 
+        // La fonction createForm() prend en 3eme param une option : 'user' => $this->getUSer(). Définir cette option également dans le OrderType
         $form = $this->createForm(OrderType::class, null, [
             'user' => $this->getUser()
         ]);
@@ -55,7 +56,7 @@ class OrderController extends AbstractController
 
         // SI le formulaire est soumis ET le formulaire est valide ALORS
         if ($form->isSubmitted() && $form->isValid()) {
-
+           
             $date = new DateTime();
 
             // On récupère dans notre formulaire les données relatives au champ 'carriers'
@@ -63,6 +64,7 @@ class OrderController extends AbstractController
 
             // On récupère dans notre formulaire les données relatives au champ 'addresses'
             $delivery = $form->get('addresses')->getData();
+            
             $delivery_content = $delivery->getFirstname().' '.$delivery->getLastname();
             $delivery_content .= '<br>'.$delivery->getPhone();
 
