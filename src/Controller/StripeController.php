@@ -77,7 +77,8 @@ class StripeController extends AbstractController
         // Exécute
         $entitymanager->flush();
 
-        $response = new JsonResponse(['id' => $checkout_session->id]);
-        return $response;
+        // $response = new JsonResponse(['id' => $checkout_session->id]);
+        
+        return $this->redirect($checkout_session->url);
     }
 }
