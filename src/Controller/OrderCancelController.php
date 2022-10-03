@@ -22,7 +22,8 @@ class OrderCancelController extends AbstractController
     {
         $order = $this->entityManager->getRepository(Order::class)->findOneByStripeSessionId($stripeSessionId);
 
-        // SI la commande n'existe pas OU que l'utilisateur ne correspond pas à celui actuellement connecté ALORS
+        // SI la commande n'existe pas OU que l'utilisateur ne correspond pas à celui actuellement connecté ALORS 
+        // SÉCURITÉ
         if (!$order || $order->getUser() != $this->getUser()) {
            return $this->redirectToRoute('home');
         } 
