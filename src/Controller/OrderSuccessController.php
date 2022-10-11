@@ -30,12 +30,12 @@ class OrderSuccessController extends AbstractController
         } 
 
         // SI la commande est en statut NON payé
-        if (!$order->isIsPaid()) {
+        if ($order->getState() == 0) {
             // Vider la session "cart"
             $cart->remove();
 
-            // Modifier le statut isPaid de notre commande en mettant 1
-            $order->setIsPaid(1);
+            // Modifier le statut de notre commande en mettant 1
+            $order->setState(1);
             
             // Exécute
             $this->entityManager->flush();
@@ -45,7 +45,7 @@ class OrderSuccessController extends AbstractController
 
             $content = "Bonjour ". $order->getUser()->getFirstName()."<br>Merci pour votre commande.<br><br>" ;
 
-            $mail->send($order->getUser()->getEmail(), $order->getUser()->getFirstName(), 'Votre commande sur La Boutique Française est bien validée.', $content); 
+            $mail->send($order->getUser()->getEmail(), $order->getUser()->getFirstName(), 'Votre commande La Boutique Française est bien validée.', $content); 
         }
 
         return $this->render('order_success/index.html.twig', [
