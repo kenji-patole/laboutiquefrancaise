@@ -35,9 +35,11 @@ class OrderCrudController extends AbstractCrudController
     }
 
     public function configureActions(Actions $actions): Actions
-    {
+
+    {   // Ajouter une nouvelle action Préparation en cours
         $updatePreparation = Action::new('updatePreparation', 'Préparation en cours', 'fas fa-box-open')->linkToCrudAction('updatePreparation');
 
+        // Ajouter une nouvelle action Livraison en cours
         $updateDelivery = Action::new('updateDelivery', 'Livraison en cours', 'fas fa-truck')->linkToCrudAction('updateDelivery');
 
         return $actions
