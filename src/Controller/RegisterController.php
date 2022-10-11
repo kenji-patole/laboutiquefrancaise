@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Classe\Mail;
 use App\Entity\User;
 use App\Form\RegisterType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -21,9 +22,11 @@ class RegisterController extends AbstractController
     }
 
     #[Route('/inscription', name: 'register')]
-    // Injection de dépendance (ManagerRegistry pour envoyer des données en DB)
+    // Injection de dépendance 
     public function index(Request $request, UserPasswordHasherInterface $passwordHasher): Response
     {
+        $notification = null;
+
         $user = new User();
         $form = $this->createForm(RegisterType::class, $user);
 
@@ -35,22 +38,39 @@ class RegisterController extends AbstractController
             // On ajoute à notre instance user les données du formulaire
             $user = $form->getData();
 
-            $password = $passwordHasher->hashPassword($user, $user->getPassword());
-            // dd($password);
+            $search_email = $this->entityManager->getRepository(User::class)->findOneByEmail($user->getEmail());
 
-            // Définit le nouveau mot de passe crypté
-            $user->setPassword($password);
+            // SI l'email n'est pas déjà présent en base de données ALORS
+            if (!$search_email) {
+                $password = $passwordHasher->hashPassword($user, $user->getPassword());
+                // dd($password);
 
-            // Fige la data pour l'enregistrer
-            $this->entityManager->persist($user);
+                // Définit le nouveau mot de passe crypté
+                $user->setPassword($password);
 
-            // Exécute 
-            $this->entityManager->flush();
+                // Fige la data pour l'enregistrer
+                $this->entityManager->persist($user);
+
+                // Exécute 
+                $this->entityManager->flush();
+
+                // Envoie d'un email
+                $mail = new Mail();
+
+                $content = "Bonjour ". $user->getFirstName()."<br>Bienvenue sur la première boutique dédiée au made in France.<br><br>" ;
+
+                $mail->send($user->getEmail(), $user->getFirstName(), 'Bienvenue sur La Boutique Française', $content);
+
+                $notification = "Votre inscription s'est correctement déroulée. Vous pouvez dès à présent vous connecter à votre compte.";
+            } else {
+                $notification = "L'email que vous avez renseigné existe déjà.";
+            }
 
         }
 
         return $this->render('register/index.html.twig', [
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'notification' => $notification
         ]);
     }
 }

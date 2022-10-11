@@ -42,7 +42,7 @@ class Mail
     // Envoie le mail en POST
     $response = $mj->post(Resources::$Email, ['body' => $body]);
 
-    $response->success() && dd($response->getData());
+    $response->success();
   }
 
 }
